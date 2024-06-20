@@ -1,0 +1,6 @@
+Flask==2.0.2
+Flask-Cors==3.0.10
+streamlit==0.85.1
+SpeechRecognition==3.8.1
+gtts==2.2.3
+requests==2.26.0

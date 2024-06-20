@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech Recognition and Text to Speech</title>
+</head>
+<body>
+    <h1>Speech to Text and Text to Speech</h1>
+    <h2>Speech to Text</h2>
+    <button onclick="startListening()">Start Listening</button>
+    <p id="speechToTextResult"></p>
+
+    <h2>Text to Speech</h2>
+    <form id="textToSpeechForm">
+        <input type="text" name="text" placeholder="Enter text here">
+        <button type="submit">Convert to Speech</button>
+    </form>
+    <audio id="audioPlayer" controls></audio>
+
+    <script>
+        function startListening() {
+            fetch('/speech_to_text', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('speechToTextResult').textContent = data.text || data.error;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        document.getElementById('textToSpeechForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            fetch('/text_to_speech', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    const audio = document.getElementById('audioPlayer');
+                    audio.src = '/static/output.mp3';
+                    audio.load();
+                    audio.play();
+                } else {
+                    alert(data.error);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
